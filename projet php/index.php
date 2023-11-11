@@ -62,7 +62,7 @@ $resultats = $requete->fetchAll(PDO::FETCH_ASSOC);
     Ajouter un raccourci :
     <form method="POST" action="" enctype="multipart/form-data">
         <input type="text" name="lien"><br>
-        <input type="file" name="mon_fichier", id="mon_fichier", accept=".png,.pdf,.jpg,.mp3,.txt,.doc,.mp4,.jpeg">
+        <input type="file" name="mon_fichier" id="mon_fichier" accept=".png,.pdf,.jpg,.mp3,.txt,.doc,.mp4,.jpeg">
         <input type="submit" name="submit">
     </form>
     <br><br>
@@ -101,10 +101,9 @@ $resultats = $requete->fetchAll(PDO::FETCH_ASSOC);
     </a>
 </body>
 
-</html>
-
 <?php
-function generateRandomString($length = 10) {
+function generateRandomString($length = 10)
+{
     $randomBytes = random_bytes(ceil($length / 2));
     $randomString = bin2hex($randomBytes);
     return substr($randomString, 0, $length);
@@ -112,27 +111,21 @@ function generateRandomString($length = 10) {
 
 function uploadFile($file, $uploadDirectory, $bdd, $raccourcie)
 {
-  
+
     if ($file['error'] !== UPLOAD_ERR_OK) {
         echo "Erreur lors du téléchargement du fichier.";
         return false;
     }
 
-   
     $fileName = uniqid() . '_' . $file['name'];
 
-    
     $destination = $uploadDirectory . '/' . $fileName;
     if (!move_uploaded_file($file['tmp_name'], $destination)) {
         echo "Erreur lors du déplacement du fichier vers le répertoire d'upload.";
         return false;
     }
 
-    $lien = str_replace("index.php", $destination, "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]");
-
-    if (!str_contains($lien, "file/")) {
-        $lien = $lien.$destination;
-    }
+    $lien = $uploadDirectory . $fileName;
 
     $query = "INSERT INTO url (user_id, lien, lien_raccourcie, nombre_clic, actif) VALUES (:id, :lien, :lien_raccourcie, 0, 1)";
     $requete = $bdd->prepare($query);
@@ -140,6 +133,7 @@ function uploadFile($file, $uploadDirectory, $bdd, $raccourcie)
     $requete->bindParam(':lien', $lien, PDO::PARAM_STR);
     $requete->bindParam(':lien_raccourcie', $raccourcie, PDO::PARAM_STR);
     $requete->execute();
-
 }
 ?>
+
+</html>
