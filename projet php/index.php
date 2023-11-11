@@ -81,16 +81,16 @@ $resultats = $requete->fetchAll(PDO::FETCH_ASSOC);
                     <td><?php echo $resultat['nombre_clic']; ?></td>
                     <td>
                         <?php
-                if (isset($resultat['id'])) {
-                    echo '<a href="supprimer.php?id=' . $resultat['id'] . '">Supprimer</a> | ';
+                        if (isset($resultat['id'])) {
+                            echo '<a href="supprimer.php?id=' . $resultat['id'] . '">Supprimer</a> | ';
 
-                    if ($resultat['actif'] == 1) {
-                        echo '<a href="toggle.php?id=' . $resultat['id'] . '">Désactiver</a>';
-                    } else {
-                        echo '<a href="toggle.php?id=' . $resultat['id'] . '">Activer</a>';
-                    }
-                }
-                ?>
+                            if ($resultat['actif'] == 1) {
+                                echo '<a href="toggle.php?id=' . $resultat['id'] . '">Désactiver</a>';
+                            } else {
+                                echo '<a href="toggle.php?id=' . $resultat['id'] . '">Activer</a>';
+                            }
+                        }
+                        ?>
                     </td>
                 </tr>
             <?php endforeach; ?>
