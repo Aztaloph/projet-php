@@ -5,25 +5,33 @@ $bdd = new PDO('mysql:host=localhost;dbname=projet_php;charset=utf8;','root', 'r
 if(isset($_POST['submit'])){
     // si les champs ne sont pas vide
     if(!empty($_POST['email']) AND !empty($_POST['mdp'])){
-        //on récupère les valeurs des champs
+        // on récupère les valeurs des champs
         $email = htmlspecialchars($_POST['email']);
         $mdp = $_POST['mdp'];
-        // on récupère dans la base de données l'utilisateur ayant des informations qui match
-        $recupUser = $bdd->prepare('SELECT * FROM users WHERE email = ? AND mdp = ?');
-        $recupUser->execute(array($email, $mdp));
-        // si oui on determine une session avec les valeurs de cet utilisateur
+
+        // on récupère dans la base de données l'utilisateur ayant un email qui match
+        $recupUser = $bdd->prepare('SELECT * FROM users WHERE email = ?');
+        $recupUser->execute(array($email));
+
+        // si on trouve un utilisateur avec cet email
         if($recupUser->rowCount() > 0){
-            $_SESSION['email'] = $email;
-            $_SESSION['mdp'] = $mdp;
-            $_SESSION['id'] = $recupUser->fetch()['id'];
-            header('location: index.php');
-        }else{
-            echo "email ou mot de passe incorrect";
+            $user = $recupUser->fetch();
+            // on vérifie le mot de passe avec password_verify
+            if(password_verify($mdp, $user['mdp'])){
+                // si le mot de passe correspond, on démarre la session
+                $_SESSION['email'] = $email;
+                $_SESSION['id'] = $user['id'];
+                $_SESSION['mdp'] = $user['mdp'];
+                header('location: index.php');
+            } else {
+                echo "Login incorrect";
+            }
         }
     }else{
-        echo "Veuillez completez tous les champs";
+        echo "Veuillez compléter tous les champs";
     }
 }
+
 ?>
 
 <!DOCTYPE html>
